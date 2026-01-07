@@ -19,6 +19,19 @@
             <!-- Entries will be loaded here -->
         </main>
     </div>
+    <div id="voteModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modalEntryText"></p>
+            <div class="vote-controls">
+                <button id="upvoteBtn" class="vote-button">👍</button>
+                <button id="downvoteBtn" class="vote-button">👎</button>
+            </div>
+            <div class="vote-results">
+                <p>Upvoted by: <span id="upvotePercentage">0%</span></p>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

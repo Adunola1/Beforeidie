@@ -119,6 +119,101 @@ button:hover {
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    backdrop-filter: blur(5px); /* Subtle blur for background */
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.close-button {
+    color: var(--color-charcoal);
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: var(--color-clay);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modalEntryText {
+    font-size: 1.3em;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+.vote-controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.vote-button {
+    background-color: var(--color-sand);
+    color: var(--color-charcoal);
+    border: none;
+    border-radius: 50%; /* Make them circular */
+    width: 60px;
+    height: 60px;
+    font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vote-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#upvoteBtn:hover {
+    background-color: #a8d5ba; /* A soft green for upvote */
+}
+
+#downvoteBtn:hover {
+    background-color: #e0b4b4; /* A soft red for downvote */
+}
+
+.vote-results {
+    font-size: 1.1em;
+    color: var(--color-charcoal);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     h1 {
@@ -136,6 +231,17 @@ button:hover {
 
     .entry-card {
         padding: 20px;
+    }
+
+    .modal-content {
+        width: 90%;
+        padding: 20px;
+    }
+    
+    .vote-button {
+        width: 50px;
+        height: 50px;
+        font-size: 1.8em;
     }
 }
 
@@ -155,5 +261,9 @@ button:hover {
     .entries-grid {
         gap: 15px;
     }
-}
 
+    #modalEntryText {
+        font-size: 1.1em;
+    }
+
+}

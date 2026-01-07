@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const entryInput = document.getElementById('entryInput');
     const submitBtn = document.getElementById('submitBtn');
     const entriesGrid = document.getElementById('entriesGrid');
+    const voteModal = document.getElementById('voteModal');
+    const closeButton = document.querySelector('.close-button');
+    const modalEntryText = document.getElementById('modalEntryText');
+    const upvoteBtn = document.getElementById('upvoteBtn');
+    const downvoteBtn = document.getElementById('downvoteBtn');
+    const upvotePercentageSpan = document.getElementById('upvotePercentage');
 
     const defaultEntries = [
         "Before I die, I want to travel to Japan and see the cherry blossoms",
@@ -81,20 +87,57 @@ document.addEventListener('DOMContentLoaded', () => {
     let userEntries = JSON.parse(localStorage.getItem('beforeIDieEntries')) || [];
     let entries = [...defaultEntries, ...userEntries];
 
+    // votes structure: { "entry text": { upvotes: N, downvotes: M } }
+    let votes = JSON.parse(localStorage.getItem('beforeIDieVotes')) || {};
+
+    let currentEntryText = ''; // To store the text of the entry currently in the modal
+
     const saveEntries = () => {
-        localStorage.setItem('beforeIDieEntries', JSON.stringify(entries));
+        localStorage.setItem('beforeIDieEntries', JSON.stringify(userEntries)); // Only save user entries
+    };
+
+    const saveVotes = () => {
+        localStorage.setItem('beforeIDieVotes', JSON.stringify(votes));
+    };
+
+    const calculatePercentage = (entryText) => {
+        const entryVotes = votes[entryText] || { upvotes: 0, downvotes: 0 };
+        const totalVotes = entryVotes.upvotes + entryVotes.downvotes;
+        if (totalVotes === 0) {
+            return '0%';
+        }
+        const upvotePercent = (entryVotes.upvotes / totalVotes) * 100;
+        return `${upvotePercent.toFixed(0)}%`;
+    };
+
+    const updateVoteDisplay = () => {
+        upvotePercentageSpan.textContent = calculatePercentage(currentEntryText);
+    };
+
+    const openModal = (entryText) => {
+        currentEntryText = entryText;
+        modalEntryText.textContent = entryText;
+        updateVoteDisplay();
+        voteModal.style.display = 'flex';
+    };
+
+    const closeModal = () => {
+        voteModal.style.display = 'none';
+        currentEntryText = '';
     };
 
     const createEntryCard = (text) => {
         const card = document.createElement('div');
         card.classList.add('entry-card');
         card.textContent = text;
+        card.addEventListener('click', () => openModal(text));
         return card;
     };
 
     const renderEntries = () => {
         entriesGrid.innerHTML = '';
-        const shuffledEntries = [...entries].sort(() => Math.random() - 0.5);
+        const allEntries = [...defaultEntries, ...userEntries]; // Combine for rendering
+        const shuffledEntries = [...allEntries].sort(() => Math.random() - 0.5);
         shuffledEntries.forEach(entry => {
             entriesGrid.appendChild(createEntryCard(entry));
         });
@@ -103,11 +146,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const addEntry = () => {
         const newEntryText = entryInput.value.trim();
         if (newEntryText) {
-            entries.push(newEntryText);
+            userEntries.push(newEntryText); // Add to user entries
             saveEntries();
             entryInput.value = '';
             renderEntries();
         }
+    };
+
+    const castVote = (type) => {
+        if (!votes[currentEntryText]) {
+            votes[currentEntryText] = { upvotes: 0, downvotes: 0 };
+        }
+        if (type === 'upvote') {
+            votes[currentEntryText].upvotes++;
+        } else if (type === 'downvote') {
+            votes[currentEntryText].downvotes++;
+        }
+        saveVotes();
+        updateVoteDisplay();
     };
 
     submitBtn.addEventListener('click', addEntry);
@@ -117,6 +173,16 @@ document.addEventListener('DOMContentLoaded', () => {
             addEntry();
         }
     });
+
+    closeButton.addEventListener('click', closeModal);
+    window.addEventListener('click', (event) => {
+        if (event.target == voteModal) {
+            closeModal();
+        }
+    });
+
+    upvoteBtn.addEventListener('click', () => castVote('upvote'));
+    downvoteBtn.addEventListener('click', () => castVote('downvote'));
 
     // Initial render
     renderEntries();
